@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./www.js",
-    "test" : "nodemon ./www.j"
+    "test" : "nodemon ./index.js"
   },
   "dependencies": {
     "body-parser": "~1.15.1",
