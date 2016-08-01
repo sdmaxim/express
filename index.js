@@ -1,4 +1,4 @@
-var express = module.exports = require('express');
+var express = require('express');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 
@@ -12,7 +12,8 @@ var users = require('./routes/users');
 var hits = require('./routes/hits');
 var auth = require('./auth/auth');
 
-var app = module.exports = express();
+var app = express();
+var router = express.Router();
 
 // config
 
@@ -31,12 +32,59 @@ app.use(session({
 }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(router); //Связь между app и router
 
-app.use('/', auth);
-app.use('/counter', counter);
-app.use('/users', users);
-app.get('/hits', hits.count);
-app.post('/hit', hits.registerNew);
+
+router.get('/', function(req, res){
+  console.log("login" + "****");
+  res.redirect('/login');
+});
+
+router.get('/restricted', auth.restrict, function(req, res){
+  res.send('Wahoo! restricted area, click to <a href="/logout">logout</a>');
+});
+
+router.get('/logout', function(req, res){
+  // destroy the user's session to log them out
+  // will be re-created next request
+  req.session.destroy(function(){
+    res.redirect('/');
+  });
+});
+
+router.get('/login', function(req, res){
+  res.render('login');
+});
+
+router.post('/login', function(req, res){
+  authenticate(req.body.username, req.body.password, function(err, user){
+    if (user) {
+      // Regenerate session when signing in
+      // to prevent fixation
+      req.session.regenerate(function(){
+        // Store the user's primary key
+        // in the session store to be retrieved,
+        // or in this case the entire user object
+        req.session.user = user;
+        req.session.success = 'Authenticated as ' + user.name
+          + ' click to <a href="/logout">logout</a>. '
+          + ' You may now access <a href="/restricted">/restricted</a>.';
+        res.redirect('back');
+      });
+    } else {
+      req.session.error = 'Authentication failed, please check your '
+        + ' username and password.'
+        + ' (use "tj" and "foobar")';
+      res.redirect('/login');
+    }
+  });
+});
+
+router.use('/counter', counter);
+router.use('/users', users);
+//router.use('/login', auth);
+router.get('/hits', hits.count);
+router.post('/hit', hits.registerNew);
 
 /*// catch 404 and forward to error handler
 app.use(function(req, res, next) {

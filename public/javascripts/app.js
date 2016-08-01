@@ -14,4 +14,8 @@ angular.module('myApp', [
 			$scope.hits = data;
 		});
 	}
+
+	$scope.login = function() {
+		
+	}
 });

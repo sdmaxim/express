@@ -1,6 +1,6 @@
 angular.module('myApp.services', [])
 .factory('HitService', function($q, $http) {
-	var service = {
+	return {
 		count: function() {
 			var d = $q.defer();
 			$http.get('/hits')
@@ -22,5 +22,18 @@ angular.module('myApp.services', [])
 			return d.promise;
 		}
 	}
-	return service;
+})
+.factory('authService', function(){
+	return {
+		login : function (){
+			var d = $q.defer();
+			$http.post('/login', {})
+			.success(function(data, status) {
+				d.resolve(data.hits);
+			}).error(function(data, status) {
+				d.reject(data);
+			});
+			return d.promise;
+		}
+	}
 });
