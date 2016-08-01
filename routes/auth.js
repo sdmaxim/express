@@ -76,4 +76,16 @@ var restrict = function(req, res, next) {
   }
 }
 
+var getLoginStatus = function(req, res) {
+  var status = 'logged in false';
+  if (req.session.user) {
+    status = 'logged in true';
+  }
+  res.send(200, {
+    auth : status
+  });
+}
+
 module.exports.restrict = restrict;
+module.exports.authenticate = authenticate;
+module.exports.getLoginStatus = getLoginStatus;

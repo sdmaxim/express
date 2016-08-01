@@ -4,35 +4,26 @@ angular.module('myApp.services', [])
 		count: function() {
 			var d = $q.defer();
 			$http.get('/hits')
-			.success(function(data, status) {
-				d.resolve(data.hits);
-			}).error(function(data, status) {
-				d.reject(data);
-			});
+			.success(function(data, status) {	d.resolve(data.hits);	})
+				.error(function(data, status) {	d.reject(data);	});
 			return d.promise;
 		},
 		registerHit: function() {
 			var d = $q.defer();
 			$http.post('/hit', {})
-			.success(function(data, status) {
-				d.resolve(data.hits);
-			}).error(function(data, status) {
-				d.reject(data);
-			});
+			.success(function(data, status) {	d.resolve(data.hits);	})
+				.error(function(data, status) { d.reject(data);	});
 			return d.promise;
 		}
 	}
 })
-.factory('authService', function(){
+.factory('AuthService', function($q, $http){
 	return {
 		login : function (){
 			var d = $q.defer();
-			$http.post('/login', {})
-			.success(function(data, status) {
-				d.resolve(data.hits);
-			}).error(function(data, status) {
-				d.reject(data);
-			});
+			$http.get('/auth', {})
+			.success(function(data, status) {	d.resolve(data.auth);	})
+				.error(function(data, status) {	d.reject(data);	});
 			return d.promise;
 		}
 	}

@@ -10,12 +10,14 @@
 	<body>
 		<div ng-controller="HomeController">
 			<h3>Button hits: {{ hits }}</h3>
-			<button ng-click="registerHit()">
+			<a ng-click="registerHit()">
 				HIT ME, if you dare
-			</button>
-			<button ng-click="login()">
-				goto login page
-			</button>
+			</a>
+			<a ng-click="login()" href="login">
+				Login
+			</a>
+			<button ng-click="login()">Get Status</button>
+			{{loginStatus}}
 		</div>
 		<script src="javascripts/services.js"></script>
 		<script src="javascripts/app.js"></script>

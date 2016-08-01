@@ -10,7 +10,7 @@ var cookieParser = require('cookie-parser');
 var counter = require('./routes/index');
 var users = require('./routes/users');
 var hits = require('./routes/hits');
-var auth = require('./auth/auth');
+var auth = require('./routes/auth');
 
 var app = express();
 var router = express.Router();
@@ -34,12 +34,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(router); //Связь между app и router
 
-
-router.get('/', function(req, res){
-  console.log("login" + "****");
-  res.redirect('/login');
-});
-
 router.get('/restricted', auth.restrict, function(req, res){
   res.send('Wahoo! restricted area, click to <a href="/logout">logout</a>');
 });
@@ -57,7 +51,7 @@ router.get('/login', function(req, res){
 });
 
 router.post('/login', function(req, res){
-  authenticate(req.body.username, req.body.password, function(err, user){
+  auth.authenticate(req.body.username, req.body.password, function(err, user){
     if (user) {
       // Regenerate session when signing in
       // to prevent fixation
@@ -82,9 +76,9 @@ router.post('/login', function(req, res){
 
 router.use('/counter', counter);
 router.use('/users', users);
-//router.use('/login', auth);
 router.get('/hits', hits.count);
 router.post('/hit', hits.registerNew);
+router.get('/auth', auth.getLoginStatus);
 
 /*// catch 404 and forward to error handler
 app.use(function(req, res, next) {
